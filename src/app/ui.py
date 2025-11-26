@@ -1,0 +1,10 @@
+def show_menu():
+    print("\n=== MENU ===")
+    print("1 - Carregar imagem")
+    print("2 - Modo Webcam")
+    print("3 - Aplicar filtro")
+    print("4 - Operações aritméticas")
+    print("5 - Adicionar sticker")
+    print("6 - Salvar imagem")
+    print("0 - Sair")
+    return input("Escolha: ")
