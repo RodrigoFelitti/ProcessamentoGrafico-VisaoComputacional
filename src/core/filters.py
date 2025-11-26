@@ -7,32 +7,24 @@ Cada filtro retorna uma nova imagem processada com OpenCV.
 """
 
 
-# ------------------------------
-# 1. GAUSSIAN BLUR
-# ------------------------------
+#Aplica gaussian blur
 def apply_gaussian(image, ksize=5):
     return cv2.GaussianBlur(image, (ksize, ksize), 0)
 
 
-# ------------------------------
-# 2. BOX BLUR
-# ------------------------------
+#box blur
 def apply_box(image, ksize=3):
     return cv2.blur(image, (ksize, ksize))
 
 
-# ------------------------------
-# 3. MEDIAN BLUR
-# ------------------------------
+#median blur
 def apply_median(image, ksize=5):
     return cv2.medianBlur(image, ksize)
 
 
-# ------------------------------
-# 4. SHARPEN
-# ------------------------------
+#sharpen
 def apply_sharpen(image):
-    # kernel clássico de nitidez
+    #kernel de nitidez
     kernel = np.array([
         [0, -1,  0],
         [-1, 5, -1],
@@ -41,9 +33,7 @@ def apply_sharpen(image):
     return cv2.filter2D(image, -1, kernel)
 
 
-# ------------------------------
-# 5. LAPLACIAN
-# ------------------------------
+#laplacian
 def apply_laplacian(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     lap = cv2.Laplacian(gray, cv2.CV_64F)
@@ -51,9 +41,7 @@ def apply_laplacian(image):
     return cv2.cvtColor(lap, cv2.COLOR_GRAY2BGR)
 
 
-# ------------------------------
-# 6. SOBEL EDGE DETECTION
-# ------------------------------
+#sobel edge
 def apply_sobel(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -66,16 +54,12 @@ def apply_sobel(image):
     return cv2.cvtColor(sobel, cv2.COLOR_GRAY2BGR)
 
 
-# ------------------------------
-# 7. GRAYSCALE
-# ------------------------------
+#gray
 def to_grayscale(image):
     return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
-# ------------------------------
-# 8. SELECT CHANNEL
-# ------------------------------
+#escolher canais específicos
 def select_channel(image, channel='r'):
     b, g, r = cv2.split(image)
 
@@ -92,26 +76,18 @@ def select_channel(image, channel='r'):
         return image
 
 
-# ------------------------------
-# 9. THRESHOLD (BINÁRIO)
-# ------------------------------
+#threshold
 def apply_threshold(image, thresh=127):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, th = cv2.threshold(gray, thresh, 255, cv2.THRESH_BINARY)
     return cv2.cvtColor(th, cv2.COLOR_GRAY2BGR)
 
 
-# ------------------------------
-# 10. CANNY EDGE DETECTION
-# ------------------------------
+#canny edge
 def apply_canny(image, t1=100, t2=200):
     edges = cv2.Canny(image, t1, t2)
     return cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
-
-# ------------------------------------------------------
-# DESCRIÇÕES DOS FILTROS — para exibir no console/menus
-# ------------------------------------------------------
 def get_filter_description(name):
     desc = {
         "gaussian": "Suavização utilizando um kernel Gaussiano (reduz ruído).",

@@ -1,20 +1,17 @@
 import cv2
 from src.core import filters
 
+#Mudança de filtros pelo teclado
 def run_webcam_filters():
-    """
-    Inicia a webcam e permite alternar filtros em tempo real via teclado.
-    """
     cap = cv2.VideoCapture(0)
 
     if not cap.isOpened():
         print("Erro ao iniciar webcam. Verifique a conexão.")
         return
 
-    # Estado inicial: nenhum filtro
+    #variavel de estado
     current_filter = None
     
-    # Parâmetros extras (ex: canal para o filtro de canais)
     current_channel = 'r' 
 
     print("\n--- CONTROLES DA WEBCAM ---")
@@ -32,7 +29,7 @@ def run_webcam_filters():
             print("Falha na captura do frame.")
             break
 
-        # Processamento do filtro ativo
+        #aplicação dos filtros
         if current_filter == "gaussian":
             frame = filters.apply_gaussian(frame)
         
@@ -52,7 +49,6 @@ def run_webcam_filters():
             frame = filters.apply_sobel(frame)
         
         elif current_filter == "gray":
-            # O filtro retorna 1 canal, mas imshow lida bem com isso
             frame = filters.to_grayscale(frame)
         
         elif current_filter == "channel":
@@ -64,7 +60,7 @@ def run_webcam_filters():
         elif current_filter == "canny":
             frame = filters.apply_canny(frame)
 
-        # Adiciona texto na tela para saber qual filtro está ativo
+        #texto para identificar o filtro usando função do opencv
         label = f"Filtro: {current_filter if current_filter else 'Normal'}"
         if current_filter == "channel":
             label += f" ({current_channel.upper()})"
@@ -74,13 +70,12 @@ def run_webcam_filters():
 
         cv2.imshow("Webcam - Pressione Q para sair", frame)
 
-        # Leitura do teclado
+        #leitura do teclado
         key = cv2.waitKey(1) & 0xFF
 
         if key == ord('q'):
             break
         
-        # Mapeamento de teclas numéricas para filtros
         elif key == ord('0'): current_filter = None
         elif key == ord('1'): current_filter = "gaussian"
         elif key == ord('2'): current_filter = "box"
@@ -92,7 +87,6 @@ def run_webcam_filters():
         elif key == ord('8'): current_filter = "threshold"
         elif key == ord('9'): current_filter = "canny"
         
-        # Teclas de letras para canais
         elif key == ord('r'): 
             current_filter = "channel"
             current_channel = 'r'

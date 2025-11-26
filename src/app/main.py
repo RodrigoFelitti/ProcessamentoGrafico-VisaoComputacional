@@ -5,13 +5,21 @@ from src.app.image_loader import load_image, save_image, load_second_image
 from src.app.video import run_webcam_filters
 import os
 
+#variáveis globais de estado
 current_image = None
 original_image = None
 
+#método auxiliar para limpar o estado
+def pause_and_cleanup():
+    """Fecha janelas, limpa buffer OpenCV e espera ENTER."""
+    cv2.waitKey(1)
+    cv2.destroyAllWindows()
+    cv2.waitKey(1)
+    input("\nPressione ENTER para voltar ao menu...")
 
-# --------------------------
-# Aplicar filtros
-# --------------------------
+'''
+Chama as funções de cada um dos filtros do arquivo filters.py
+'''
 def apply_filter(image, filter_name):
     if filter_name == "gaussian":
         return filters.apply_gaussian(image)
@@ -38,31 +46,16 @@ def apply_filter(image, filter_name):
         print("Filtro inválido.")
         return image
 
-
-# ==========================
-# Helper pós-operação
-# ==========================
-def pause_and_cleanup():
-    """Fecha janelas, limpa buffer OpenCV e espera ENTER."""
-    cv2.waitKey(1)
-    cv2.destroyAllWindows()
-    cv2.waitKey(1)
-    input("\nPressione ENTER para voltar ao menu...")
-
-
-
-# --------------------------
-# Menu principal
-# --------------------------
+'''
+Menu principal pelo console (loop da aplicação)
+'''
 def main():
     global current_image, original_image
 
     while True:
         choice = show_menu()
 
-        # -------------------
-        # Carregar imagem
-        # -------------------
+        #Carregamento de imagem
         if choice == "1":
             path = input("Caminho da imagem: ").strip()
             current_image = load_image(path)
@@ -75,18 +68,13 @@ def main():
 
             pause_and_cleanup()
 
-        # -------------------
-        # Webcam
-        # -------------------
+        #Parte de vídeo (video.py)
         elif choice == "2":
-            # A função agora gerencia todo o ciclo de vida da janela e filtros
             run_webcam_filters()
             
             pause_and_cleanup()
 
-        # -------------------
-        # Aplicar filtro
-        # -------------------
+        #Chama a aplicação de filtros na imagem (filters.py)
         elif choice == "3":
             if current_image is None:
                 print("Carregue uma imagem primeiro.")
@@ -106,9 +94,7 @@ def main():
 
             pause_and_cleanup()
 
-        # -------------------
-        # Operações aritméticas
-        # -------------------
+        #Operações entre imagens (operations.py)
         elif choice == "4":
             if current_image is None:
                 print("Carregue uma imagem antes de usar operações.")
@@ -145,9 +131,7 @@ def main():
 
             pause_and_cleanup()
 
-        # -------------------
-        # Stickers (Interativo)
-        # -------------------
+        #Stickers com o click do mouse
         elif choice == "5":
             if current_image is None:
                 print("Carregue uma imagem primeiro.")
@@ -156,22 +140,16 @@ def main():
 
             st_path = input("Caminho do sticker (PNG com alpha): ")
             
-            # Chama a nova função interativa
-            # Ela retorna a imagem editada ou a original (se cancelar)
+            #retorna a imagem editada ou a original (se cancelar)
             current_image = stickers.apply_stickers_interactive(current_image, st_path)
             
-            # Mostra o resultado final (opcional, pois já vemos na interação)
-            # Mas útil para confirmar que foi salvo na variável current_image
+            #mostra o resultado final
             cv2.imshow("Resultado Final", current_image)
             cv2.waitKey(0)
 
             pause_and_cleanup()
 
-            pause_and_cleanup()
-
-        # -------------------
-        # Salvar imagem
-        # -------------------
+        #Salvar a imagem
         elif choice == "6":
             if current_image is None:
                 print("Nenhuma imagem carregada.")
@@ -180,14 +158,11 @@ def main():
 
             out = input("Salvar como (ex: resultado.png): ")
             
-            # A função save_image agora cuida de tudo e retorna True/False
             save_image(out, current_image)
 
             pause_and_cleanup()
 
-        # -------------------
-        # Resetar imagem
-        # -------------------
+        #Resetar a imagem
         elif choice == "7":
             if original_image is not None:
                 current_image = original_image.copy()
@@ -197,9 +172,7 @@ def main():
 
             pause_and_cleanup()
 
-        # -------------------
-        # Sair
-        # -------------------
+        #Sair
         elif choice == "0":
             print("Saindo...")
             break
